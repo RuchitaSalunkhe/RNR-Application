@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Form Submission</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 800px;
+                margin: auto;
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            h2 {
+                text-align: center;
+            }
+
+            .form-group {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 15px;
+            }
+
+            .left-section {
+                width: 45%;
+            }
+
+            .right-section {
+                width: 50%;
+            }
+
+            label {
+                font-weight: bold;
+            }
+
+            select,
+            input,
+            textarea {
+                width: 100%;
+                padding: 8px;
+                margin-top: 5px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-sizing: border-box;
+                /* Ensures padding doesn’t affect width */
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                display: none;
+                table-layout: fixed;
+                /* Ensures equal column distribution */
+            }
+
+            table,
+            th,
+            td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
+
+            th {
+                background-color: #f2f2f2;
+                white-space: nowrap;
+                /* Prevents column text wrapping */
+            }
+
+            /* Ensure equal width for all columns */
+            th,
+            td {
+                width: 25%;
+                min-width: 120px;
+            }
+
+            /* Make inputs inside table fit properly */
+            table input {
+                width: 100%;
+                padding: 6px;
+                box-sizing: border-box;
+            }
+
+            button {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                margin-top: 10px;
+                background: #28a745;
+                color: white;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+
+            button:hover {
+                background: #218838;
+            }
+
+            #nomineesField input {
+                width: 60px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h2>Rewards and Recognition</h2>
+            <form id="dataForm">
+                <div class="form-group">
+                    <div class="left-section">
+                        <label for="department">Department:</label>
+                        <select id="department" name="department" required>
+                            <option value="">Select Department</option>
+                            <option value="BBP">BBP</option>
+                            <option value="CS">CS</option>
+                            <option value="COC">COC</option>
+                            <option value="IT">IT</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+
+                    <div class="right-section">
+                        <label for="projectname">Project Name:</label>
+                        <input type="text" id="projectname" name="projectname" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="left-section">
+                        <label for="rewardstype">Rewards Type:</label>
+                        <select id="rewardstype" name="rewardstype" required>
+                            <option value="">Select Rewards Type</option>
+                            <option value="Precisely Right Award">Precisely Right Award</option>
+                            <option value="CFT">CFT</option>
+                        </select>
+                    </div>
+
+                    <div class="right-section">
+                        <label for="nominatedbyname">Nominated By Name:</label>
+                        <input type="text" id="nominatedbyname" name="nominatedbyname" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="left-section">
+                        <label for="category">Category:</label>
+                        <select id="category" name="category" required onchange="toggleFields()">
+                            <option value="">Select Category</option>
+                            <option value="Individuals">Individuals</option>
+                            <option value="Team">Team</option>
+                        </select>
+                    </div>
+
+                    <div class="right-section">
+                        <label for="nominatedby">Nominated By (Email):</label>
+                        <input type="email" id="nominatedby" name="nominatedby" required>
+                    </div>
+                </div>
+
+                <div id="nomineesField">
+                    <label for="numberofnominees">Number of Nominees:</label>
+                    <input type="number" id="numberofnominees" name="numberofnominees" min="1" value="1">
+                </div>
+
+                <table id="employeeTable">
+                    <thead>
+                        <tr>
+                            <th>Employee Code</th>
+                            <th>Employee Name</th>
+                            <th>Mobile Number</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+
+                <br>
+                <label for="achievement">Achievement:</label>
+                <textarea id="achievement" name="achievement" rows="3"
+                    style="width: 100%; resize: vertical;"></textarea>
+
+                <button type="submit">Submit</button>
+            </form>
+            <p id="message"></p>
+        </div>
+
+        <script>
+
+            function toggleFields() {
+                let category = document.getElementById("category").value;
+                let nomineesField = document.getElementById("nomineesField");
+                let numberofnominees = document.getElementById("numberofnominees");
+                let employeeTable = document.getElementById("employeeTable");
+
+                if (category === "Individuals") {
+                    nomineesField.style.display = "none";
+                    numberofnominees.value = 1;
+                    updateNomineeTable(1);
+                } else if (category === "Team") {
+                    nomineesField.style.display = "block";
+                    numberofnominees.value = 1;
+                    updateNomineeTable(1);
+                } else {
+                    nomineesField.style.display = "none";
+                    employeeTable.style.display = "none";
+                }
+            }
+
+            document.getElementById("numberofnominees").addEventListener("input", function () {
+                updateNomineeTable(this.value);
+            });
+
+            document.addEventListener("input", function (event) {
+                if (event.target.name === "mobilenumber[]") {
+                    event.target.value = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                }
+            });
+
+            function updateNomineeTable(count) {
+                let tableBody = document.getElementById("tableBody");
+                let employeeTable = document.getElementById("employeeTable");
+                tableBody.innerHTML = "";
+
+                if (count < 1) return;
+
+                employeeTable.style.display = "table";
+
+                for (let i = 0; i < count; i++) {
+                    let row = document.createElement("tr");
+                    row.innerHTML = `
+            <td><input type="text" name="employeecode[]" required></td>
+            <td><input type="text" name="employeename[]" required></td>
+            <td><input type="text" name="mobilenumber[]" required></td>
+            <td><input type="email" name="email[]" required></td>
+        `;
+                    tableBody.appendChild(row);
+                }
+            }
+
+
+            document.getElementById("dataForm").addEventListener("submit", async function (event) {
+                event.preventDefault();
+
+                let formData = new FormData(this);
+                let response = await fetch("/submit", {
+                    method: "POST",
+                    body: formData
+                });
+
+                let result = await response.json();
+                document.getElementById("message").innerText = result.message;
+                alert("Form submitted successfully!"); // Show success popup
+
+                this.reset(); // Clear all form fields
+
+
+            });
+            document.getElementById("employeeTable").style.display = "table";
+            updateNomineeTable(1);
+
+
+        </script>
+
+    </body>
+
+</html>
